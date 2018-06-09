@@ -24,10 +24,7 @@ object TimeExpression {
 
 
   def daily(every: Int, from: LocalDate): TimeExpression = new TimeExpression {
-    override def isRecurringOn(givenlocalDate: LocalDate): Boolean = {
-      val daysBetweenFollowsTheRule = Recurrence.happensEveryXDays(every, from, givenlocalDate)
-     return daysBetweenFollowsTheRule
-    }
+    override def isRecurringOn(givenlocalDate: LocalDate): Boolean = Recurrence.happensEveryXDays(every, from, givenlocalDate)
   }
 
   def monthlyEvery(amountOfMonth: Int, dayOfMonth: Int, from: YearMonth): TimeExpression = new TimeExpression {

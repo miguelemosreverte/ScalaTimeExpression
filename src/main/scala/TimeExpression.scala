@@ -20,8 +20,6 @@ object TimeExpression {
     */
   def apply(localDate: LocalDate): TimeExpression = (givenlocalDate: LocalDate) => givenlocalDate == localDate
 
-  def NonRecurring(localDate: LocalDate): TimeExpression = (givenlocalDate: LocalDate) => givenlocalDate == localDate
-
   def daily(every: Int, from: LocalDate): TimeExpression = new TimeExpression {
     override def isRecurringOn(givenlocalDate: LocalDate): Boolean = {
       val daysBetween = DAYS.between(from, givenlocalDate)

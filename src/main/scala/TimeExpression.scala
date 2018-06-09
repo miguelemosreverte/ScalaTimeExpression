@@ -63,8 +63,8 @@ object TimeExpression {
       }
 
       val dayOfWeekFollowsTheRule =  weekOfMonth match {
-        case First =>  givenLocalDateGetWeekOfMonth == 1 //primitive obsession, maybe. I think I could improve this?
-        case Second => givenLocalDateGetWeekOfMonth == 2
+        case First =>  givenLocalDateGetWeekOfMonth == 1 //primitive obsession, maybe. I think I could improve this? (case class)
+        case Second => givenLocalDateGetWeekOfMonth == 2 //I refuse to use case classes because I find case objects so cool!
         case Last =>   givenLocalDateGetWeekOfMonth == countDayOccurenceInMonth(dayOfWeek, YearMonth.from(givenlocalDate))
 
 

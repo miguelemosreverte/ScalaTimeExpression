@@ -1,6 +1,7 @@
 import java.time.{DayOfWeek, LocalDate, MonthDay, YearMonth}
 
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.FlatSpec
+import org.scalatest.Matchers
 
 class TimeExpressionSpec extends FlatSpec with Matchers {
 
@@ -10,7 +11,7 @@ class TimeExpressionSpec extends FlatSpec with Matchers {
 
     todayTimeExp.isRecurringOn(today) should be(true)
   }
-
+  /*
   it should "reccur every day" in {
     val oneDay = 1
     val today = LocalDate.now
@@ -132,5 +133,5 @@ class TimeExpressionSpec extends FlatSpec with Matchers {
     everyAugustTheEightFrom2012.isRecurringOn(firstEightOfAugust.plusYears(1)) should be(true)
     everyAugustTheEightFrom2012.isRecurringOn(firstEightOfAugust.plusYears(2)) should be(true)
     everyAugustTheEightFrom2012.isRecurringOn(firstEightOfAugust.plusYears(3)) should be(true)
-  }
+  }*/
 }

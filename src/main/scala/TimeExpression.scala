@@ -24,13 +24,17 @@ object TimeExpression {
 
   def happensEveryXMonths(everyXMonths: Int,
                           from: LocalDate,
-                          givenlocalDate: LocalDate) : Boolean =
-    MONTHS.between(from, givenlocalDate) % everyXMonths == 0
+                          givenlocalDate: LocalDate)
+  : Boolean = MONTHS.between(from, givenlocalDate) % everyXMonths == 0
+
+  def happensEveryXDays(everyXDays: Int,
+                          from: LocalDate,
+                          givenlocalDate: LocalDate)
+  : Boolean = DAYS.between(from, givenlocalDate) % everyXDays == 0
 
   def daily(every: Int, from: LocalDate): TimeExpression = new TimeExpression {
     override def isRecurringOn(givenlocalDate: LocalDate): Boolean = {
-      val daysBetween = DAYS.between(from, givenlocalDate)
-      val daysBetweenFollowsTheRule = daysBetween % every == 0
+      val daysBetweenFollowsTheRule = happensEveryXDays(every, from, givenlocalDate)
      return daysBetweenFollowsTheRule
     }
   }
@@ -45,7 +49,7 @@ object TimeExpression {
 
   def monthlyEvery(amountMonth: Int, dayOfWeek: DayOfWeek, weekOfMonth: Int, from: YearMonth): TimeExpression = new TimeExpression {
     override def isRecurringOn(givenlocalDate: LocalDate): Boolean = {
-      val monthsBetweenFollowsTheRule = MONTHS.between(from, givenlocalDate) % amountMonth == 0
+      val monthsBetweenFollowsTheRule = happensEveryXMonths(amountMonth, from.atDay(1), givenlocalDate)
       val firstDayOfMonth = givenlocalDate.minusDays(givenlocalDate.getDayOfMonth)
       val givenLocalDateGetWeekOfMonth =  WEEKS.between(firstDayOfMonth, givenlocalDate)
       val weeksBetweenFollowsTheRule = givenLocalDateGetWeekOfMonth == weekOfMonth
@@ -60,7 +64,7 @@ object TimeExpression {
   def monthlyEvery(amountMonth: Int, dayOfWeek: DayOfWeek, weekOfMonth: OcurrenceOfDayInMonth.PatternMatch, from: YearMonth): TimeExpression = new TimeExpression {
     override def isRecurringOn(givenlocalDate: LocalDate): Boolean = {
 
-      val monthsBetweenFollowsTheRule = MONTHS.between(from, givenlocalDate) % amountMonth == 0
+      val monthsBetweenFollowsTheRule = happensEveryXMonths(amountMonth, from.atDay(1), givenlocalDate)
       val firstDayOfMonth = givenlocalDate.minusDays(givenlocalDate.getDayOfMonth-1)
       val givenLocalDateGetWeekOfMonth =  WEEKS.between(firstDayOfMonth, givenlocalDate) + 1
 

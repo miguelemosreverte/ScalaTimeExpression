@@ -26,7 +26,7 @@ class TimeExpressionSpec extends FlatSpec with Matchers {
     everyDayFromToday.isRecurringOn(today.plusDays(6)) should be(true)
     everyDayFromToday.isRecurringOn(today.plusYears(50)) should be(true)
   }
-  /*
+
     it should "reccur every two days" in {
       val twoDays = 2
       val today = LocalDate.now
@@ -42,7 +42,7 @@ class TimeExpressionSpec extends FlatSpec with Matchers {
       everyTwoDaysFromToday.isRecurringOn(today.plusDays(30001)) should be(false)
       everyTwoDaysFromToday.isRecurringOn(today.plusDays(30002)) should be(true)
     }
-
+/*
     it should "reccur every month the second day" in {
       val oneMonth = 1
       val secondDayOfMonth = 2

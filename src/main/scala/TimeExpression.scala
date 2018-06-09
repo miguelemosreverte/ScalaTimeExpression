@@ -1,4 +1,5 @@
 import java.time.{DayOfWeek, LocalDate, MonthDay, YearMonth}
+import java.time.temporal.ChronoUnit.DAYS
 
 object TimeExpression {
 
@@ -14,7 +15,11 @@ object TimeExpression {
 
 
   def daily(every: Int, from: LocalDate): TimeExpression = new TimeExpression {
-    override def isRecurringOn(givenlocalDate: LocalDate): Boolean =  givenlocalDate.compareTo(from) >= 0
+    override def isRecurringOn(givenlocalDate: LocalDate): Boolean = {
+      val isAfterTruly = givenlocalDate.compareTo(from) >= 0
+      val daysBetween = DAYS.between(from, givenlocalDate)
+     return isAfterTruly && (daysBetween % every == 0)
+    }
   }
 
   def monthlyEvery(amountOfMonth: Int, dayOfMonth: Int, from: YearMonth): TimeExpression = ???

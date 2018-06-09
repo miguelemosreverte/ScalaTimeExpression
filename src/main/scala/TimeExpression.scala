@@ -20,31 +20,18 @@ object TimeExpression {
     */
   def apply(localDate: LocalDate): TimeExpression = (givenlocalDate: LocalDate) => givenlocalDate == localDate
 
-  def NonReccurrent(localDate: LocalDate): TimeExpression = (givenlocalDate: LocalDate) => givenlocalDate == localDate
 
-  def happensEveryX(period : java.time.temporal.ChronoUnit, every : Int, from: LocalDate, givenLocalDate : LocalDate)
-  : Boolean = period.between(from, givenLocalDate) % every == 0
-
-  def happensEveryXMonths(everyXMonths: Int,
-                          from: LocalDate,
-                          givenlocalDate: LocalDate)
-  : Boolean = happensEveryX(MONTHS, everyXMonths, from, givenlocalDate)
-
-  def happensEveryXDays(everyXDays: Int,
-                          from: LocalDate,
-                          givenlocalDate: LocalDate)
-  : Boolean = happensEveryX(DAYS, everyXDays, from, givenlocalDate)
 
   def daily(every: Int, from: LocalDate): TimeExpression = new TimeExpression {
     override def isRecurringOn(givenlocalDate: LocalDate): Boolean = {
-      val daysBetweenFollowsTheRule = happensEveryXDays(every, from, givenlocalDate)
+      val daysBetweenFollowsTheRule = Recurrence.happensEveryXDays(every, from, givenlocalDate)
      return daysBetweenFollowsTheRule
     }
   }
 
   def monthlyEvery(amountOfMonth: Int, dayOfMonth: Int, from: YearMonth): TimeExpression = new TimeExpression {
     override def isRecurringOn(givenlocalDate: LocalDate): Boolean = {
-      val monthsBetweenFollowsTheRule = happensEveryXMonths(amountOfMonth, from.atDay(1), givenlocalDate)
+      val monthsBetweenFollowsTheRule = Recurrence.happensEveryXMonths(amountOfMonth, from.atDay(1), givenlocalDate)
       val dayOfMonthFollowsTheRule = dayOfMonth == givenlocalDate.getDayOfMonth
       return monthsBetweenFollowsTheRule && dayOfMonthFollowsTheRule
     }
@@ -52,7 +39,7 @@ object TimeExpression {
 
   def monthlyEvery(amountMonth: Int, dayOfWeek: DayOfWeek, weekOfMonth: Int, from: YearMonth): TimeExpression = new TimeExpression {
     override def isRecurringOn(givenlocalDate: LocalDate): Boolean = {
-      val monthsBetweenFollowsTheRule = happensEveryXMonths(amountMonth, from.atDay(1), givenlocalDate)
+      val monthsBetweenFollowsTheRule = Recurrence.happensEveryXMonths(amountMonth, from.atDay(1), givenlocalDate)
       val firstDayOfMonth = givenlocalDate.minusDays(givenlocalDate.getDayOfMonth)
       val givenLocalDateGetWeekOfMonth =  WEEKS.between(firstDayOfMonth, givenlocalDate)
       val weeksBetweenFollowsTheRule = givenLocalDateGetWeekOfMonth == weekOfMonth
@@ -67,7 +54,7 @@ object TimeExpression {
   def monthlyEvery(amountMonth: Int, dayOfWeek: DayOfWeek, weekOfMonth: OcurrenceOfDayInMonth.PatternMatch, from: YearMonth): TimeExpression = new TimeExpression {
     override def isRecurringOn(givenlocalDate: LocalDate): Boolean = {
 
-      val monthsBetweenFollowsTheRule = happensEveryXMonths(amountMonth, from.atDay(1), givenlocalDate)
+      val monthsBetweenFollowsTheRule = Recurrence.happensEveryXMonths(amountMonth, from.atDay(1), givenlocalDate)
       val firstDayOfMonth = givenlocalDate.minusDays(givenlocalDate.getDayOfMonth-1)
       val givenLocalDateGetWeekOfMonth =  WEEKS.between(firstDayOfMonth, givenlocalDate)
 

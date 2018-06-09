@@ -22,15 +22,18 @@ object TimeExpression {
 
   def NonReccurrent(localDate: LocalDate): TimeExpression = (givenlocalDate: LocalDate) => givenlocalDate == localDate
 
+  def happensEveryX(period : java.time.temporal.ChronoUnit, every : Int, from: LocalDate, givenLocalDate : LocalDate)
+  : Boolean = period.between(from, givenLocalDate) % every == 0
+
   def happensEveryXMonths(everyXMonths: Int,
                           from: LocalDate,
                           givenlocalDate: LocalDate)
-  : Boolean = MONTHS.between(from, givenlocalDate) % everyXMonths == 0
+  : Boolean = happensEveryX(MONTHS, everyXMonths, from, givenlocalDate)
 
   def happensEveryXDays(everyXDays: Int,
                           from: LocalDate,
                           givenlocalDate: LocalDate)
-  : Boolean = DAYS.between(from, givenlocalDate) % everyXDays == 0
+  : Boolean = happensEveryX(DAYS, everyXDays, from, givenlocalDate)
 
   def daily(every: Int, from: LocalDate): TimeExpression = new TimeExpression {
     override def isRecurringOn(givenlocalDate: LocalDate): Boolean = {

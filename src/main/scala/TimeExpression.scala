@@ -1,5 +1,5 @@
 import java.time.{DayOfWeek, LocalDate, MonthDay, YearMonth}
-import java.time.temporal.ChronoUnit.{DAYS, WEEKS, MONTHS}
+import java.time.temporal.ChronoUnit.{DAYS, WEEKS, MONTHS, YEARS}
 
 object TimeExpression {
 
@@ -14,33 +14,43 @@ object TimeExpression {
 
   def daily(every: Int, from: LocalDate): TimeExpression = new TimeExpression {
     override def isRecurringOn(givenlocalDate: LocalDate): Boolean = {
-      val isAfterTruly = givenlocalDate.compareTo(from) >= 0
       val daysBetween = DAYS.between(from, givenlocalDate)
       val daysBetweenFollowsTheRule = daysBetween % every == 0
-     return isAfterTruly && daysBetweenFollowsTheRule
+     return daysBetweenFollowsTheRule
     }
   }
 
   def monthlyEvery(amountOfMonth: Int, dayOfMonth: Int, from: YearMonth): TimeExpression = new TimeExpression {
     override def isRecurringOn(givenlocalDate: LocalDate): Boolean = {
-      val isAfterTruly = givenlocalDate.compareTo(from.atDay(1)) >= 0
       val monthsBetweenFollowsTheRule = MONTHS.between(from, givenlocalDate) % amountOfMonth == 0
       val dayOfMonthFollowsTheRule = dayOfMonth == givenlocalDate.getDayOfMonth
-      return isAfterTruly && monthsBetweenFollowsTheRule && dayOfMonthFollowsTheRule
+      return monthsBetweenFollowsTheRule && dayOfMonthFollowsTheRule
     }
   }
 
   def monthlyEvery(amountMonth: Int, dayOfWeek: DayOfWeek, weekOfMonth: Int, from: YearMonth): TimeExpression = new TimeExpression {
     override def isRecurringOn(givenlocalDate: LocalDate): Boolean = {
-      val isAfterTruly = givenlocalDate.compareTo(from.atDay(1)) >= 0
       val monthsBetweenFollowsTheRule = MONTHS.between(from, givenlocalDate) % amountMonth == 0
-      val weeksBetweenFollowsTheRule = WEEKS.between(from, givenlocalDate) % weekOfMonth == 0
+      val firstDayOfMonth = givenlocalDate.minusDays(givenlocalDate.getDayOfMonth)
+      val givenLocalDateGetWeekOfMonth =  WEEKS.between(firstDayOfMonth, givenlocalDate)
+      val weeksBetweenFollowsTheRule = givenLocalDateGetWeekOfMonth == weekOfMonth
+
       val dayOfWeekFollowsTheRule = dayOfWeek == givenlocalDate.getDayOfWeek
-      return isAfterTruly && monthsBetweenFollowsTheRule && weeksBetweenFollowsTheRule && dayOfWeekFollowsTheRule
+      println("monthly every B")
+      println(monthsBetweenFollowsTheRule, from, givenlocalDate)
+      println(weeksBetweenFollowsTheRule, from.atDay(1), givenlocalDate, givenlocalDate.getDayOfMonth, givenLocalDateGetWeekOfMonth, weekOfMonth)
+      println(dayOfWeekFollowsTheRule, dayOfWeek, givenlocalDate.getDayOfWeek)
+
+      println()
+      println("Why is weekOfMonth 3??? weekOfMonth:" + weekOfMonth)
+      return monthsBetweenFollowsTheRule && weeksBetweenFollowsTheRule && dayOfWeekFollowsTheRule
     }
   }
 
-  def yearlyEvery(amountOfYears: Int, day: MonthDay, fromYear: Int): TimeExpression = ???
+  def yearlyEvery(amountOfYears: Int, day: MonthDay, fromYear: Int): TimeExpression
+      = (givenlocalDate: LocalDate) => day.getDayOfMonth == givenlocalDate.getDayOfMonth
+
+
 
 }
 

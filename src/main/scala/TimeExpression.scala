@@ -66,11 +66,11 @@ object TimeExpression {
 
       val monthsBetweenFollowsTheRule = happensEveryXMonths(amountMonth, from.atDay(1), givenlocalDate)
       val firstDayOfMonth = givenlocalDate.minusDays(givenlocalDate.getDayOfMonth-1)
-      val givenLocalDateGetWeekOfMonth =  WEEKS.between(firstDayOfMonth, givenlocalDate) + 1
+      val givenLocalDateGetWeekOfMonth =  WEEKS.between(firstDayOfMonth, givenlocalDate)
 
       def countDayOccurenceInMonth(dow: DayOfWeek, month: YearMonth) : Long = {
         val start = month.atDay(1).`with`(TemporalAdjusters.nextOrSame(dow))
-        return ChronoUnit.WEEKS.between(start, month.atEndOfMonth()) + 1
+        return ChronoUnit.WEEKS.between(start, month.atEndOfMonth())
       }
 
       val dayOfWeekFollowsTheRule =  weekOfMonth match {

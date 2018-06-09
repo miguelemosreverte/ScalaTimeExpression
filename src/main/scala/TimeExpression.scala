@@ -1,7 +1,7 @@
 import java.time.{DayOfWeek, LocalDate, MonthDay, YearMonth}
 import java.time.temporal.ChronoUnit.{DAYS, MONTHS, WEEKS}
 import java.time.temporal.{ChronoUnit, TemporalAdjusters}
-import WeekOfMonth.{First, Second, Last}
+import OcurrenceOfDayInMonth.{First, Second, Last}
 
 trait TimeExpression {
 
@@ -20,6 +20,13 @@ object TimeExpression {
     */
   def apply(localDate: LocalDate): TimeExpression = (givenlocalDate: LocalDate) => givenlocalDate == localDate
 
+  def NonReccurrent(localDate: LocalDate): TimeExpression = (givenlocalDate: LocalDate) => givenlocalDate == localDate
+
+  def happensEveryXMonths(everyXMonths: Int,
+                          from: LocalDate,
+                          givenlocalDate: LocalDate) : Boolean =
+    MONTHS.between(from, givenlocalDate) % everyXMonths == 0
+
   def daily(every: Int, from: LocalDate): TimeExpression = new TimeExpression {
     override def isRecurringOn(givenlocalDate: LocalDate): Boolean = {
       val daysBetween = DAYS.between(from, givenlocalDate)
@@ -30,7 +37,7 @@ object TimeExpression {
 
   def monthlyEvery(amountOfMonth: Int, dayOfMonth: Int, from: YearMonth): TimeExpression = new TimeExpression {
     override def isRecurringOn(givenlocalDate: LocalDate): Boolean = {
-      val monthsBetweenFollowsTheRule = MONTHS.between(from, givenlocalDate) % amountOfMonth == 0
+      val monthsBetweenFollowsTheRule = happensEveryXMonths(amountOfMonth, from.atDay(1), givenlocalDate)
       val dayOfMonthFollowsTheRule = dayOfMonth == givenlocalDate.getDayOfMonth
       return monthsBetweenFollowsTheRule && dayOfMonthFollowsTheRule
     }
@@ -50,7 +57,7 @@ object TimeExpression {
 
 
 
-  def monthlyEvery(amountMonth: Int, dayOfWeek: DayOfWeek, weekOfMonth: WeekOfMonth.PatternMatch, from: YearMonth): TimeExpression = new TimeExpression {
+  def monthlyEvery(amountMonth: Int, dayOfWeek: DayOfWeek, weekOfMonth: OcurrenceOfDayInMonth.PatternMatch, from: YearMonth): TimeExpression = new TimeExpression {
     override def isRecurringOn(givenlocalDate: LocalDate): Boolean = {
 
       val monthsBetweenFollowsTheRule = MONTHS.between(from, givenlocalDate) % amountMonth == 0
@@ -81,9 +88,12 @@ object TimeExpression {
 
 }
 
-object WeekOfMonth {
+object OcurrenceOfDayInMonth {
   sealed trait PatternMatch
   case object First extends PatternMatch
   case object Second extends PatternMatch
+  case object Third extends PatternMatch
+  case object Fourth extends PatternMatch
+  case object Fifth extends PatternMatch
   case object Last extends PatternMatch
 }

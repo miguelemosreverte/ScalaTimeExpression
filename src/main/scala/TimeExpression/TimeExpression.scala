@@ -1,3 +1,5 @@
+package TimeExpression
+
 import java.time.{DayOfWeek, LocalDate, MonthDay, YearMonth}
 import java.time.temporal.ChronoUnit.{DAYS, MONTHS, WEEKS}
 import java.time.temporal.{ChronoUnit, TemporalAdjusters}
@@ -7,7 +9,6 @@ trait TimeExpression {
 
   def isRecurringOn(localDate: LocalDate): Boolean
 }
-
 
 object TimeExpression {
 
@@ -80,14 +81,4 @@ object TimeExpression {
 
 
 
-}
-
-object OcurrenceOfDayInMonth {
-  sealed trait PatternMatch
-  case object First extends PatternMatch
-  case object Second extends PatternMatch
-  case object Third extends PatternMatch
-  case object Fourth extends PatternMatch
-  case object Fifth extends PatternMatch
-  case object Last extends PatternMatch
 }

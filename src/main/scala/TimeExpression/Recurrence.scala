@@ -1,8 +1,7 @@
+package TimeExpression
+
 import java.time.{DayOfWeek, LocalDate, MonthDay, YearMonth}
 import java.time.temporal.ChronoUnit.{DAYS, MONTHS, WEEKS}
-import java.time.temporal.{ChronoUnit, TemporalAdjusters}
-import OcurrenceOfDayInMonth.{First, Second, Last}
-
 
 object Recurrence {
 

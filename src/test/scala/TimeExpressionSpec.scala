@@ -1,7 +1,8 @@
 import java.time.{DayOfWeek, LocalDate, MonthDay, YearMonth}
-
 import org.scalatest.FlatSpec
 import org.scalatest.Matchers
+
+import TimeExpression.{TimeExpression, OcurrenceOfDayInMonth}
 
 class TimeExpressionSpec extends FlatSpec with Matchers {
 

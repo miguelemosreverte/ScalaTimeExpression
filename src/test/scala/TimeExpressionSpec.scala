@@ -97,7 +97,7 @@ class TimeExpressionSpec extends FlatSpec with Matchers {
     everyMonthTheFirstFridayFromJanuary2012.isRecurringOn(firstFridayOfJanuary2012.plusWeeks(13)) should be(true)
   }
 
-  it should "reccur every month the last friday" in {
+  it should "reccur every month the 3 friday" in {
     val oneMonth = 1
     val lastWeekOfMonth = 3
     val januaryOf2012 = YearMonth.of(2012, 1)
@@ -115,15 +115,34 @@ class TimeExpressionSpec extends FlatSpec with Matchers {
     everyMonthTheFirstFridayFromJanuary2012.isRecurringOn(firstFridayOfJanuary2012.plusWeeks(8)) should be(false)
     everyMonthTheFirstFridayFromJanuary2012.isRecurringOn(firstFridayOfJanuary2012.plusWeeks(9)) should be(false)
     everyMonthTheFirstFridayFromJanuary2012.isRecurringOn(firstFridayOfJanuary2012.plusWeeks(10)) should be(false)
-    //everyMonthTheFirstFridayFromJanuary2012.isRecurringOn(firstFridayOfJanuary2012.plusWeeks(11)) should be(false)
-    //everyMonthTheFirstFridayFromJanuary2012.isRecurringOn(firstFridayOfJanuary2012.plusWeeks(12)) should be(true)
+  }
+
+  it should "reccur every month the last friday" in {
+    val oneMonth = 1
+    val lastWeekOfMonth = TimeExpression.WeekOfMonth.Last
+    val januaryOf2012 = YearMonth.of(2012, 1)
+    val everyMonthTheFirstFridayFromJanuary2012 = TimeExpression.monthlyEvery(oneMonth, DayOfWeek.FRIDAY, lastWeekOfMonth, januaryOf2012)
+
+    val firstFridayOfJanuary2012 = LocalDate.of(2012, 1, 6)
+    everyMonthTheFirstFridayFromJanuary2012.isRecurringOn(firstFridayOfJanuary2012) should be(false)
+    everyMonthTheFirstFridayFromJanuary2012.isRecurringOn(firstFridayOfJanuary2012.plusWeeks(1)) should be(false)
+    everyMonthTheFirstFridayFromJanuary2012.isRecurringOn(firstFridayOfJanuary2012.plusWeeks(2)) should be(false)
+    everyMonthTheFirstFridayFromJanuary2012.isRecurringOn(firstFridayOfJanuary2012.plusWeeks(3)) should be(true)
+    everyMonthTheFirstFridayFromJanuary2012.isRecurringOn(firstFridayOfJanuary2012.plusWeeks(4)) should be(false)
+    everyMonthTheFirstFridayFromJanuary2012.isRecurringOn(firstFridayOfJanuary2012.plusWeeks(5)) should be(false)
+    everyMonthTheFirstFridayFromJanuary2012.isRecurringOn(firstFridayOfJanuary2012.plusWeeks(6)) should be(false)
+    everyMonthTheFirstFridayFromJanuary2012.isRecurringOn(firstFridayOfJanuary2012.plusWeeks(7))  should be(true)
+    everyMonthTheFirstFridayFromJanuary2012.isRecurringOn(firstFridayOfJanuary2012.plusWeeks(8)) should be(false)
+    everyMonthTheFirstFridayFromJanuary2012.isRecurringOn(firstFridayOfJanuary2012.plusWeeks(9)) should be(false)
+    everyMonthTheFirstFridayFromJanuary2012.isRecurringOn(firstFridayOfJanuary2012.plusWeeks(10)) should be(false)
+    everyMonthTheFirstFridayFromJanuary2012.isRecurringOn(firstFridayOfJanuary2012.plusWeeks(11)) should be(false)
+    everyMonthTheFirstFridayFromJanuary2012.isRecurringOn(firstFridayOfJanuary2012.plusWeeks(12)) should be(true)
     everyMonthTheFirstFridayFromJanuary2012.isRecurringOn(firstFridayOfJanuary2012.plusWeeks(13)) should be(false)
     everyMonthTheFirstFridayFromJanuary2012.isRecurringOn(firstFridayOfJanuary2012.plusWeeks(14)) should be(false)
     everyMonthTheFirstFridayFromJanuary2012.isRecurringOn(firstFridayOfJanuary2012.plusWeeks(15)) should be(false)
     everyMonthTheFirstFridayFromJanuary2012.isRecurringOn(firstFridayOfJanuary2012.plusWeeks(16)) should be(true)
   }
-
-  it should "reccur every year the last friday" in {
+  it should "reccur every year on augustTheEight" in {
     val oneYear = 1
     val augustTheEight = MonthDay.of(8, 8)
     val everyAugustTheEightFrom2012 = TimeExpression.yearlyEvery(oneYear, augustTheEight, 2012)

@@ -1,7 +1,9 @@
 import java.time.{DayOfWeek, LocalDate, MonthDay, YearMonth}
-import java.time.temporal.ChronoUnit.{DAYS, WEEKS, MONTHS, YEARS}
+import java.time.temporal.ChronoUnit.{DAYS, MONTHS, WEEKS, YEARS}
+import java.time.temporal.{ChronoUnit, TemporalAdjusters}
 
 object TimeExpression {
+
 
   /**
     * This expression matches on the date of parameter value.
@@ -36,18 +38,47 @@ object TimeExpression {
       val weeksBetweenFollowsTheRule = givenLocalDateGetWeekOfMonth == weekOfMonth
 
       val dayOfWeekFollowsTheRule = dayOfWeek == givenlocalDate.getDayOfWeek
-      println("monthly every B")
-      println(monthsBetweenFollowsTheRule, from, givenlocalDate)
-      println(weeksBetweenFollowsTheRule, from.atDay(1), givenlocalDate, givenlocalDate.getDayOfMonth, givenLocalDateGetWeekOfMonth, weekOfMonth)
-      println(dayOfWeekFollowsTheRule, dayOfWeek, givenlocalDate.getDayOfWeek)
-
-      println()
-      println("Why is weekOfMonth 3??? weekOfMonth:" + weekOfMonth)
-      println(amountMonth, dayOfWeek, weekOfMonth, from)
-      println(givenlocalDate, givenLocalDateGetWeekOfMonth)
       return monthsBetweenFollowsTheRule && weeksBetweenFollowsTheRule && dayOfWeekFollowsTheRule
     }
   }
+
+  object WeekOfMonth {
+    sealed trait PatternMatch
+    case object First extends PatternMatch
+    case object Second extends PatternMatch
+    case object Last extends PatternMatch
+  }
+
+
+  def monthlyEvery(amountMonth: Int, dayOfWeek: DayOfWeek, weekOfMonth: TimeExpression.WeekOfMonth.PatternMatch, from: YearMonth): TimeExpression = new TimeExpression {
+    override def isRecurringOn(givenlocalDate: LocalDate): Boolean = {
+
+      val monthsBetweenFollowsTheRule = MONTHS.between(from, givenlocalDate) % amountMonth == 0
+      val firstDayOfMonth = givenlocalDate.minusDays(givenlocalDate.getDayOfMonth-1)
+      val givenLocalDateGetWeekOfMonth =  WEEKS.between(firstDayOfMonth, givenlocalDate) + 1
+
+      def countDayOccurenceInMonth(dow: DayOfWeek, month: YearMonth) : Long = {
+        val start = month.atDay(1).`with`(TemporalAdjusters.nextOrSame(dow))
+        return ChronoUnit.WEEKS.between(start, month.atEndOfMonth()) + 1
+      }
+
+      val count = countDayOccurenceInMonth(dayOfWeek, YearMonth.from(givenlocalDate))
+      import TimeExpression.WeekOfMonth.{First, Second, Last}
+      val dayOfWeekFollowsTheRule =  weekOfMonth match {
+        case First => givenLocalDateGetWeekOfMonth == 1 //primitive obsession, maybe. I think I could improve this?
+        case Second => givenLocalDateGetWeekOfMonth == 2
+        case Last => {
+          val daysInMonth = YearMonth.from(givenlocalDate).lengthOfMonth()
+          val weeksTheMonthHas= Math.floor(daysInMonth/7) //sorry for the math
+          givenLocalDateGetWeekOfMonth == count
+        }
+
+
+      }
+      return monthsBetweenFollowsTheRule && dayOfWeekFollowsTheRule
+    }
+  }
+
 
   def yearlyEvery(amountOfYears: Int, day: MonthDay, fromYear: Int): TimeExpression
       = (givenlocalDate: LocalDate) => day.getDayOfMonth == givenlocalDate.getDayOfMonth

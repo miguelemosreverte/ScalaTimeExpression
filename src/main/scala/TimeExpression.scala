@@ -16,7 +16,8 @@ object TimeExpression {
     override def isRecurringOn(givenlocalDate: LocalDate): Boolean = {
       val isAfterTruly = givenlocalDate.compareTo(from) >= 0
       val daysBetween = DAYS.between(from, givenlocalDate)
-     return isAfterTruly && (daysBetween % every == 0)
+      val daysBetweenFollowsTheRule = daysBetween % every == 0
+     return isAfterTruly && daysBetweenFollowsTheRule
     }
   }
 

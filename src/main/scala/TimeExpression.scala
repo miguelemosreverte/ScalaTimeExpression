@@ -43,6 +43,8 @@ object TimeExpression {
 
       println()
       println("Why is weekOfMonth 3??? weekOfMonth:" + weekOfMonth)
+      println(amountMonth, dayOfWeek, weekOfMonth, from)
+      println(givenlocalDate, givenLocalDateGetWeekOfMonth)
       return monthsBetweenFollowsTheRule && weeksBetweenFollowsTheRule && dayOfWeekFollowsTheRule
     }
   }

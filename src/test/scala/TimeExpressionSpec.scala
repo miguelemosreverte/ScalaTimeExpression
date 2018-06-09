@@ -76,7 +76,7 @@ class TimeExpressionSpec extends FlatSpec with Matchers {
 
   it should "reccur every month the first friday" in {
     val oneMonth = 1
-    val firstWeekOfMonth = 1
+    val firstWeekOfMonth = 0
     val januaryOf2012 = YearMonth.of(2012, 1)
     val everyMonthTheFirstFridayFromJanuary2012 = TimeExpression.monthlyEvery(oneMonth, DayOfWeek.FRIDAY, firstWeekOfMonth, januaryOf2012)
 
@@ -99,7 +99,7 @@ class TimeExpressionSpec extends FlatSpec with Matchers {
 
   it should "reccur every month the last friday" in {
     val oneMonth = 1
-    val lastWeekOfMonth = 5
+    val lastWeekOfMonth = 3
     val januaryOf2012 = YearMonth.of(2012, 1)
     val everyMonthTheFirstFridayFromJanuary2012 = TimeExpression.monthlyEvery(oneMonth, DayOfWeek.FRIDAY, lastWeekOfMonth, januaryOf2012)
 

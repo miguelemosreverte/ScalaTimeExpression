@@ -9,9 +9,7 @@ object TimeExpression {
     * @param localDate a local date
     * @return a TimeExpression
     */
-  def apply(localDate: LocalDate): TimeExpression = new TimeExpression {
-    override def isRecurringOn(givenlocalDate: LocalDate): Boolean = givenlocalDate == localDate
-  }
+  def apply(localDate: LocalDate): TimeExpression = (givenlocalDate: LocalDate) => givenlocalDate == localDate
 
 
   def daily(every: Int, from: LocalDate): TimeExpression = new TimeExpression {

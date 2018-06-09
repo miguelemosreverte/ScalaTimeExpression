@@ -1,5 +1,5 @@
 import java.time.{DayOfWeek, LocalDate, MonthDay, YearMonth}
-import java.time.temporal.ChronoUnit.DAYS
+import java.time.temporal.ChronoUnit.{DAYS, MONTHS}
 
 object TimeExpression {
 
@@ -21,7 +21,14 @@ object TimeExpression {
     }
   }
 
-  def monthlyEvery(amountOfMonth: Int, dayOfMonth: Int, from: YearMonth): TimeExpression = ???
+  def monthlyEvery(amountOfMonth: Int, dayOfMonth: Int, from: YearMonth): TimeExpression = new TimeExpression {
+    override def isRecurringOn(givenlocalDate: LocalDate): Boolean = {
+      val isAfterTruly = givenlocalDate.compareTo(from.atDay(1)) >= 0
+      val monthsBetweenFollowsTheRule = MONTHS.between(from, givenlocalDate) % amountOfMonth == 0
+      val dayOfMonthFollowsTheRule = dayOfMonth == givenlocalDate
+      return isAfterTruly && monthsBetweenFollowsTheRule// && dayOfMonthFollowsTheRule
+    }
+  }
 
   def monthlyEvery(amountMonth: Int, dayOfWeek: DayOfWeek, weekOfMonth: Int, from: YearMonth): TimeExpression = ???
 

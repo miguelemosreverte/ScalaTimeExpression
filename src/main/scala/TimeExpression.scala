@@ -64,15 +64,10 @@ object TimeExpression {
         return ChronoUnit.WEEKS.between(start, month.atEndOfMonth()) + 1
       }
 
-      val count = countDayOccurenceInMonth(dayOfWeek, YearMonth.from(givenlocalDate))
       val dayOfWeekFollowsTheRule =  weekOfMonth match {
-        case First => givenLocalDateGetWeekOfMonth == 1 //primitive obsession, maybe. I think I could improve this?
+        case First =>  givenLocalDateGetWeekOfMonth == 1 //primitive obsession, maybe. I think I could improve this?
         case Second => givenLocalDateGetWeekOfMonth == 2
-        case Last => {
-          val daysInMonth = YearMonth.from(givenlocalDate).lengthOfMonth()
-          val weeksTheMonthHas= Math.floor(daysInMonth/7) //sorry for the math
-          givenLocalDateGetWeekOfMonth == count
-        }
+        case Last =>   givenLocalDateGetWeekOfMonth == countDayOccurenceInMonth(dayOfWeek, YearMonth.from(givenlocalDate))
 
 
       }

@@ -13,7 +13,9 @@ object TimeExpression {
   }
 
 
-  def daily(every: Int, from: LocalDate): TimeExpression = ???
+  def daily(every: Int, from: LocalDate): TimeExpression = new TimeExpression {
+    override def isRecurringOn(givenlocalDate: LocalDate): Boolean =  givenlocalDate.compareTo(from) >= 0
+  }
 
   def monthlyEvery(amountOfMonth: Int, dayOfMonth: Int, from: YearMonth): TimeExpression = ???
 

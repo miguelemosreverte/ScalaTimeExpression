@@ -1,6 +1,13 @@
 import java.time.{DayOfWeek, LocalDate, MonthDay, YearMonth}
-import java.time.temporal.ChronoUnit.{DAYS, MONTHS, WEEKS, YEARS}
+import java.time.temporal.ChronoUnit.{DAYS, MONTHS, WEEKS}
 import java.time.temporal.{ChronoUnit, TemporalAdjusters}
+import WeekOfMonth.{First, Second, Last}
+
+trait TimeExpression {
+
+  def isRecurringOn(localDate: LocalDate): Boolean
+}
+
 
 object TimeExpression {
 
@@ -13,6 +20,7 @@ object TimeExpression {
     */
   def apply(localDate: LocalDate): TimeExpression = (givenlocalDate: LocalDate) => givenlocalDate == localDate
 
+  def NonRecurring(localDate: LocalDate): TimeExpression = (givenlocalDate: LocalDate) => givenlocalDate == localDate
 
   def daily(every: Int, from: LocalDate): TimeExpression = new TimeExpression {
     override def isRecurringOn(givenlocalDate: LocalDate): Boolean = {
@@ -42,15 +50,9 @@ object TimeExpression {
     }
   }
 
-  object WeekOfMonth {
-    sealed trait PatternMatch
-    case object First extends PatternMatch
-    case object Second extends PatternMatch
-    case object Last extends PatternMatch
-  }
 
 
-  def monthlyEvery(amountMonth: Int, dayOfWeek: DayOfWeek, weekOfMonth: TimeExpression.WeekOfMonth.PatternMatch, from: YearMonth): TimeExpression = new TimeExpression {
+  def monthlyEvery(amountMonth: Int, dayOfWeek: DayOfWeek, weekOfMonth: WeekOfMonth.PatternMatch, from: YearMonth): TimeExpression = new TimeExpression {
     override def isRecurringOn(givenlocalDate: LocalDate): Boolean = {
 
       val monthsBetweenFollowsTheRule = MONTHS.between(from, givenlocalDate) % amountMonth == 0
@@ -63,7 +65,6 @@ object TimeExpression {
       }
 
       val count = countDayOccurenceInMonth(dayOfWeek, YearMonth.from(givenlocalDate))
-      import TimeExpression.WeekOfMonth.{First, Second, Last}
       val dayOfWeekFollowsTheRule =  weekOfMonth match {
         case First => givenLocalDateGetWeekOfMonth == 1 //primitive obsession, maybe. I think I could improve this?
         case Second => givenLocalDateGetWeekOfMonth == 2
@@ -87,7 +88,9 @@ object TimeExpression {
 
 }
 
-trait TimeExpression {
-
-  def isRecurringOn(localDate: LocalDate): Boolean
+object WeekOfMonth {
+  sealed trait PatternMatch
+  case object First extends PatternMatch
+  case object Second extends PatternMatch
+  case object Last extends PatternMatch
 }

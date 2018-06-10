@@ -35,16 +35,13 @@ object TimeExpression {
     }
   }
 
-  def monthlyEvery(amountMonth: Int, dayOfWeek: DayOfWeek, weekOfMonth: Int, from: YearMonth): TimeExpression = new TimeExpression {
-    override def isRecurringOn(givenlocalDate: LocalDate): Boolean = {
-      val monthsBetweenFollowsTheRule = Recurrence.happensEveryXMonths(amountMonth, from.atDay(1), givenlocalDate)
-      val firstDayOfMonth = givenlocalDate.minusDays(givenlocalDate.getDayOfMonth)
-      val givenLocalDateGetWeekOfMonth =  WEEKS.between(firstDayOfMonth, givenlocalDate)
-      val weeksBetweenFollowsTheRule = givenLocalDateGetWeekOfMonth == weekOfMonth
 
-      val dayOfWeekFollowsTheRule = dayOfWeek == givenlocalDate.getDayOfWeek
-      return monthsBetweenFollowsTheRule && weeksBetweenFollowsTheRule && dayOfWeekFollowsTheRule
-    }
+
+  def monthlyEvery(amountMonth: Int, dayOfWeek: DayOfWeek, weekOfMonth: Int, from: YearMonth): TimeExpression = new TimeExpression {
+    override def isRecurringOn(givenlocalDate: LocalDate): Boolean = (
+            Recurrence.happensEveryXMonths(amountMonth, from.atDay(1), givenlocalDate)
+        &&  Recurrence.happensTheXWeekOfTheMonth(weekOfMonth, from.atDay(1), givenlocalDate)
+        &&  Recurrence.specifically(dayOfWeek, givenlocalDate.getDayOfWeek))
   }
 
 
@@ -74,7 +71,7 @@ object TimeExpression {
 
 
   def yearlyEvery(amountOfYears: Int, day: MonthDay, fromYear: Int): TimeExpression
-      = (givenlocalDate: LocalDate) => day.getDayOfMonth == givenlocalDate.getDayOfMonth
+      = (givenlocalDate: LocalDate) => Recurrence.specifically(day, MonthDay.from(givenlocalDate))
 
 
 

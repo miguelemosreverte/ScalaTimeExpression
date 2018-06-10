@@ -1,7 +1,7 @@
 package TimeExpression
 
 import java.time.{DayOfWeek, LocalDate, MonthDay, YearMonth}
-import java.time.temporal.ChronoUnit.{DAYS, MONTHS, WEEKS}
+import java.time.temporal.ChronoUnit.{DAYS, MONTHS, WEEKS, YEARS}
 
 object Recurrence {
 
@@ -24,4 +24,27 @@ object Recurrence {
 
 
 
+  def happensAtTheXPeriodOfTheYPeriod(periodX : java.time.temporal.ChronoUnit, periodIndex : Int, from: LocalDate, givenLocalDate : LocalDate, periodY : java.time.temporal.ChronoUnit)
+    : Boolean = {
+    val deltaDays : Int = periodY match  {
+      case WEEKS => givenLocalDate.getDayOfWeek.getValue
+      case MONTHS => givenLocalDate.getDayOfMonth
+      case YEARS => givenLocalDate.getDayOfYear
+      }
+    val from = givenLocalDate.minusDays(deltaDays)
+    return periodX.between(from, givenLocalDate) ==  periodIndex
+  }
+
+  def happensAtXPeriodOfTheMonth(period : java.time.temporal.ChronoUnit, periodIndex : Int, from: LocalDate, givenLocalDate : LocalDate)
+  : Boolean = happensAtTheXPeriodOfTheYPeriod(WEEKS, periodIndex, from, givenLocalDate, MONTHS)
+
+  def happensTheXWeekOfTheMonth(everyXWeek: Int,
+                        from: LocalDate,
+                        givenlocalDate: LocalDate)
+  : Boolean = happensAtXPeriodOfTheMonth(WEEKS, everyXWeek, from, givenlocalDate)
+
+
+
+  def specifically(thisDate : MonthDay, thisOtherDate : MonthDay): Boolean = thisDate == thisOtherDate
+  def specifically(thisDate : DayOfWeek, thisOtherDate : DayOfWeek): Boolean = thisDate == thisOtherDate
 }

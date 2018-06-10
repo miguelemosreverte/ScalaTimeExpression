@@ -1,7 +1,7 @@
 package TimeExpression
 
-import java.time.temporal.ChronoUnit.{DAYS, MONTHS, WEEKS, YEARS}
-import java.time.{DayOfWeek, LocalDate, MonthDay, YearMonth}
+import java.time.temporal.ChronoUnit.{MONTHS, WEEKS, YEARS}
+import java.time.{DayOfWeek, LocalDate, MonthDay}
 
 object Specificity {
 

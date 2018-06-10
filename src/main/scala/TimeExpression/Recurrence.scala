@@ -1,7 +1,7 @@
 package TimeExpression
 
-import java.time.{DayOfWeek, LocalDate, MonthDay, YearMonth}
-import java.time.temporal.ChronoUnit.{DAYS, MONTHS, WEEKS, YEARS}
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit.{DAYS, MONTHS}
 
 object Recurrence {
 

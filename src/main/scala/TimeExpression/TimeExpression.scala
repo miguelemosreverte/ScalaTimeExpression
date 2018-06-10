@@ -1,10 +1,8 @@
 package TimeExpression
 
-import java.time.temporal.ChronoUnit
+import java.time.temporal.ChronoUnit.{MONTHS, WEEKS}
+import java.time.temporal.{ChronoUnit, TemporalAdjusters}
 import java.time.{DayOfWeek, LocalDate, MonthDay, YearMonth}
-
-import Ocurrence.DayOfWeekOcurrence.{Fifth, First, Fourth, Last, Second, Third}
-import java.time.temporal.ChronoUnit.{DAYS, MONTHS, WEEKS, YEARS}
 
 trait TimeExpression {
 
@@ -68,7 +66,12 @@ object TimeExpression {
 
       def happensAtXPeriodOfTheMonth(period : java.time.temporal.ChronoUnit, dayOfWeek : DayOfWeek, from: LocalDate, givenLocalDate : LocalDate)
       : Boolean = {
-        val inferredLastPeriodIndex = Ocurrence.DayOfWeekOcurrence.inMonth(dayOfWeek, YearMonth.from(givenLocalDate))
+        def lastOcurrenceOfDayOfWeekInMonth(dow: DayOfWeek, month: YearMonth) : Int = {
+          val start = month.atDay(1).`with`(TemporalAdjusters.nextOrSame(dow))
+          val end = month.atEndOfMonth()
+          return ChronoUnit.WEEKS.between(start, end).toInt
+        }
+        val inferredLastPeriodIndex = lastOcurrenceOfDayOfWeekInMonth(dayOfWeek, YearMonth.from(givenLocalDate))
         Specificity.happensAtTheXPeriodOfTheYPeriod(period, inferredLastPeriodIndex, from, givenLocalDate, MONTHS)
       }
 

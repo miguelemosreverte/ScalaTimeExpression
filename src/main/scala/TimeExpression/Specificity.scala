@@ -5,6 +5,7 @@ import java.time.{DayOfWeek, LocalDate, MonthDay}
 
 object Specificity {
 
+  def specifically(thisDate : Int, thisOtherDate : Int): Boolean = thisDate == thisOtherDate
   def specifically(thisDate : MonthDay, thisOtherDate : MonthDay): Boolean = thisDate == thisOtherDate
   def specifically(thisDate : DayOfWeek, thisOtherDate : DayOfWeek): Boolean = thisDate == thisOtherDate
 

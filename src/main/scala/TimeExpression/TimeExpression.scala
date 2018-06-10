@@ -28,11 +28,10 @@ object TimeExpression {
   }
 
   def monthlyEvery(amountOfMonth: Int, dayOfMonth: Int, from: YearMonth): TimeExpression = new TimeExpression {
-    override def isRecurringOn(givenlocalDate: LocalDate): Boolean = {
-      val monthsBetweenFollowsTheRule = Recurrence.happensEveryXMonths(amountOfMonth, from.atDay(1), givenlocalDate)
-      val dayOfMonthFollowsTheRule = dayOfMonth == givenlocalDate.getDayOfMonth
-      return monthsBetweenFollowsTheRule && dayOfMonthFollowsTheRule
-    }
+    override def isRecurringOn(givenlocalDate: LocalDate): Boolean = (
+            Recurrence.happensEveryXMonths(amountOfMonth, from.atDay(1), givenlocalDate)
+        &&  Specificity.specifically(dayOfMonth, givenlocalDate.getDayOfMonth))
+
   }
 
 

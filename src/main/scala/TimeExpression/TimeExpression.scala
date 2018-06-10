@@ -40,8 +40,8 @@ object TimeExpression {
   def monthlyEvery(amountMonth: Int, dayOfWeek: DayOfWeek, weekOfMonth: Int, from: YearMonth): TimeExpression = new TimeExpression {
     override def isRecurringOn(givenlocalDate: LocalDate): Boolean = (
             Recurrence.happensEveryXMonths(amountMonth, from.atDay(1), givenlocalDate)
-        &&  Recurrence.happensTheXWeekOfTheMonth(weekOfMonth, from.atDay(1), givenlocalDate)
-        &&  Recurrence.specifically(dayOfWeek, givenlocalDate.getDayOfWeek))
+        &&  Specificity.happensTheXWeekOfTheMonth(weekOfMonth, from.atDay(1), givenlocalDate)
+        &&  Specificity.specifically(dayOfWeek, givenlocalDate.getDayOfWeek))
   }
 
 
@@ -71,7 +71,7 @@ object TimeExpression {
 
 
   def yearlyEvery(amountOfYears: Int, day: MonthDay, fromYear: Int): TimeExpression
-      = (givenlocalDate: LocalDate) => Recurrence.specifically(day, MonthDay.from(givenlocalDate))
+      = (givenlocalDate: LocalDate) => Specificity.specifically(day, MonthDay.from(givenlocalDate))
 
 
 

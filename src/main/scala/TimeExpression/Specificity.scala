@@ -1,7 +1,7 @@
 package TimeExpression
 
 import java.time.temporal.ChronoUnit.{DAYS, MONTHS, WEEKS, YEARS}
-import java.time.{DayOfWeek, LocalDate, MonthDay}
+import java.time.{DayOfWeek, LocalDate, MonthDay, YearMonth}
 
 object Specificity {
 
@@ -9,24 +9,43 @@ object Specificity {
   def specifically(thisDate : MonthDay, thisOtherDate : MonthDay): Boolean = thisDate == thisOtherDate
   def specifically(thisDate : DayOfWeek, thisOtherDate : DayOfWeek): Boolean = thisDate == thisOtherDate
 
-  def happensAtTheXPeriodOfTheYPeriod(periodX : java.time.temporal.ChronoUnit, periodIndex : Int, from: LocalDate, givenLocalDate : LocalDate, periodY : java.time.temporal.ChronoUnit)
-    : Boolean = {
+
+
+  def periodsBetween(periodX : java.time.temporal.ChronoUnit, givenLocalDate : LocalDate, periodY : java.time.temporal.ChronoUnit)
+ : Int = {
     val deltaDays : Int = periodY match  {
       case WEEKS => givenLocalDate.getDayOfWeek.getValue
       case MONTHS => givenLocalDate.getDayOfMonth
       case YEARS => givenLocalDate.getDayOfYear
-      }
+    }
     val from = givenLocalDate.minusDays(deltaDays)
-    return periodX.between(from, givenLocalDate) ==  periodIndex
+    return periodX.between(from, givenLocalDate).toInt
   }
+
+
+  def happensAtTheXPeriodOfTheYPeriod(periodX : java.time.temporal.ChronoUnit, periodIndex : Int, from: LocalDate, givenLocalDate : LocalDate, periodY : java.time.temporal.ChronoUnit)
+    : Boolean = periodsBetween(periodX, givenLocalDate, periodY) ==  periodIndex
+
+  def happensAtTheLastPeriodOfTheYPeriod(periodX : java.time.temporal.ChronoUnit,
+                                         periodIndex : Int,
+                                         from: LocalDate,
+                                         givenLocalDate : LocalDate,
+                                         periodY : java.time.temporal.ChronoUnit)
+  : Boolean = periodsBetween(periodX, givenLocalDate, periodY) ==  periodIndex
 
 
 
   def happensAtXPeriodOfTheMonth(period : java.time.temporal.ChronoUnit, periodIndex : Int, from: LocalDate, givenLocalDate : LocalDate)
-  : Boolean = happensAtTheXPeriodOfTheYPeriod(period, periodIndex, from, givenLocalDate, MONTHS)
+  : Boolean = periodIndex match {
+    case -1 => happensAtTheLastPeriodOfTheYPeriod(period, periodIndex, from, givenLocalDate, MONTHS)
+    case _ => happensAtTheXPeriodOfTheYPeriod(period, periodIndex, from, givenLocalDate, MONTHS)
+  }
 
   def happensAtXPeriodOfTheYear(period : java.time.temporal.ChronoUnit, periodIndex : Int, from: LocalDate, givenLocalDate : LocalDate)
-  : Boolean = happensAtTheXPeriodOfTheYPeriod(period, periodIndex, from, givenLocalDate, YEARS)
+  : Boolean = periodIndex match {
+    case -1 => happensAtTheLastPeriodOfTheYPeriod(period, periodIndex, from, givenLocalDate, YEARS)
+    case _ => happensAtTheXPeriodOfTheYPeriod(period, periodIndex, from, givenLocalDate, YEARS)
+  }
 
 
 

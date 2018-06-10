@@ -2,7 +2,7 @@ import java.time.{DayOfWeek, LocalDate, MonthDay, YearMonth}
 import org.scalatest.FlatSpec
 import org.scalatest.Matchers
 
-import TimeExpression.{TimeExpression, OcurrenceOfDayInMonth}
+import TimeExpression.{TimeExpression, Ocurrence}
 
 class TimeExpressionSpec extends FlatSpec with Matchers {
 
@@ -120,7 +120,7 @@ class TimeExpressionSpec extends FlatSpec with Matchers {
 
   it should "reccur every month the last friday" in {
     val oneMonth = 1
-    val lastWeekOfMonth = OcurrenceOfDayInMonth.Last
+    val lastWeekOfMonth = Ocurrence.DayOfWeekOcurrence.Last
     val januaryOf2012 = YearMonth.of(2012, 1)
     val everyMonthTheFirstFridayFromJanuary2012 = TimeExpression.monthlyEvery(oneMonth, DayOfWeek.FRIDAY, lastWeekOfMonth, januaryOf2012)
 

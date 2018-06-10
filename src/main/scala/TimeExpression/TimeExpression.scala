@@ -3,7 +3,7 @@ package TimeExpression
 import java.time.{DayOfWeek, LocalDate, MonthDay, YearMonth}
 import java.time.temporal.ChronoUnit.{DAYS, MONTHS, WEEKS}
 import java.time.temporal.{ChronoUnit, TemporalAdjusters}
-import OcurrenceOfDayInMonth.{First, Second, Last}
+import Ocurrence.DayOfWeekOcurrence.{First, Second, Last}
 
 trait TimeExpression {
 
@@ -43,20 +43,17 @@ object TimeExpression {
 
 
 
-  def monthlyEvery(amountMonth: Int, dayOfWeek: DayOfWeek, weekOfMonth: OcurrenceOfDayInMonth.PatternMatch, from: YearMonth): TimeExpression = new TimeExpression {
+  def monthlyEvery(amountMonth: Int, dayOfWeek: DayOfWeek, weekOfMonth: Ocurrence.DayOfWeekOcurrence.PatternMatch, from: YearMonth): TimeExpression = new TimeExpression {
     override def isRecurringOn(givenlocalDate: LocalDate): Boolean = {
 
       val monthsBetweenFollowsTheRule = Recurrence.happensEveryXMonths(amountMonth, from.atDay(1), givenlocalDate)
 
-      def countDayOccurenceInMonth(dow: DayOfWeek, month: YearMonth) : Int = {
-        val start = month.atDay(1).`with`(TemporalAdjusters.nextOrSame(dow))
-        return ChronoUnit.WEEKS.between(start, month.atEndOfMonth()).toInt
-      }
+
 
       val dayOfWeekFollowsTheRule =  weekOfMonth match {
         case First =>   Specificity.happensTheXWeekOfTheMonth(1, from.atDay(1), givenlocalDate)
         case Second =>  Specificity.happensTheXWeekOfTheMonth(2, from.atDay(1), givenlocalDate)
-        case Last =>    Specificity.happensTheXWeekOfTheMonth(countDayOccurenceInMonth(dayOfWeek, YearMonth.from(givenlocalDate)), from.atDay(1), givenlocalDate)
+        case Last =>    Specificity.happensTheXWeekOfTheMonth(Ocurrence.DayOfWeekOcurrence.inMonth(dayOfWeek, YearMonth.from(givenlocalDate)), from.atDay(1), givenlocalDate)
 
 
       }

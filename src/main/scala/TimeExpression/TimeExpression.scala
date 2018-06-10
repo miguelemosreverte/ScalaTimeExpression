@@ -26,8 +26,6 @@ object TimeExpression {
   def apply(localDate: LocalDate): TimeExpression = (givenlocalDate: LocalDate) =>
           Recurrence.NonReccurrent(localDate, givenlocalDate)
 
-
-
   def daily(every: Int, from: LocalDate): TimeExpression = (givenlocalDate: LocalDate) =>
           Recurrence.happensEveryXDays(every, from, givenlocalDate)
 
@@ -37,41 +35,11 @@ object TimeExpression {
 
   def monthlyEvery(amountMonth: Int, dayOfWeek: DayOfWeek, weekOfMonth: Int, from: YearMonth): TimeExpression = (givenlocalDate: LocalDate) => (
           Recurrence.happensEveryXMonths(amountMonth, from.atDay(1), givenlocalDate)
-      &&  Specificity.happensTheXWeekOfTheMonth(weekOfMonth, from.atDay(1), givenlocalDate)
+      &&  Specificity.happensTheXWeekOfTheMonth(weekOfMonth, dayOfWeek, from.atDay(1), givenlocalDate)
       &&  Specificity.specifically(dayOfWeek, givenlocalDate.getDayOfWeek))
-
-
-
-  def monthlyEvery(amountMonth: Int, dayOfWeek: DayOfWeek, weekOfMonth: Ocurrence.DayOfWeekOcurrence.PatternMatch, from: YearMonth): TimeExpression = new TimeExpression {
-    override def isRecurringOn(givenlocalDate: LocalDate): Boolean = {
-
-      val monthsBetweenFollowsTheRule = Recurrence.happensEveryXMonths(amountMonth, from.atDay(1), givenlocalDate)
-      val dayOfWeekFollowsTheRule =  weekOfMonth match {
-        case First =>   Specificity happensTheXWeekOfTheMonth(1, from.atDay(1), givenlocalDate)
-        case Second =>  Specificity.happensTheXWeekOfTheMonth(2, from.atDay(1), givenlocalDate)
-        case Last =>    Specificity.happensTheXWeekOfTheMonth(
-          Ocurrence.DayOfWeekOcurrence.inMonth(dayOfWeek, YearMonth.from(givenlocalDate)),
-          from.atDay(1),
-          givenlocalDate)
-
-      }
-      return monthsBetweenFollowsTheRule && dayOfWeekFollowsTheRule
-    }
-  }
-
 
   def yearlyEvery(amountOfYears: Int, day: MonthDay, fromYear: Int): TimeExpression = (givenlocalDate: LocalDate) =>
           Specificity.specifically(day, MonthDay.from(givenlocalDate))
-
-  def monthlyEvery(dayOfWeek: DayOfWeek, weekOfMonth: Ocurrence.DayOfWeekOcurrence.PatternMatch, from: LocalDate, givenlocalDate:LocalDate): Boolean = weekOfMonth match {
-        case First =>   Specificity.happensTheXWeekOfTheMonth(dayOfWeek.getValue, from, givenlocalDate)
-        case Second =>  Specificity.happensTheXWeekOfTheMonth(dayOfWeek.getValue, from, givenlocalDate)
-        case Third =>   Specificity.happensTheXWeekOfTheMonth(dayOfWeek.getValue, from, givenlocalDate)
-        case Fourth =>  Specificity.happensTheXWeekOfTheMonth(dayOfWeek.getValue, from, givenlocalDate)
-        case Fifth =>   Specificity.happensTheXWeekOfTheMonth(dayOfWeek.getValue, from, givenlocalDate)
-        case Last =>    Specificity.happensTheXWeekOfTheMonth(Ocurrence.DayOfWeekOcurrence.inMonth(dayOfWeek, YearMonth.from(givenlocalDate)), from, givenlocalDate)
-        }
-
 
 
 
@@ -79,24 +47,36 @@ object TimeExpression {
 
   object SpecificityWithDefaults {
     implicit def SpecificityToSpecificityWithDefaults(o: Specificity.type): Object {
-
       def happensAtXPeriodOfTheMonth(period: ChronoUnit, periodIndex: Int, from: LocalDate, givenLocalDate: LocalDate): Boolean
-      def happensTheXWeekOfTheMonth(everyXWeek: Int, from: LocalDate, givenlocalDate: LocalDate): Boolean
-    
+
+      def happensAtXPeriodOfTheMonth(period: ChronoUnit, dayOfWeek: DayOfWeek, from: LocalDate, givenLocalDate: LocalDate): Boolean
+
+      def happensTheXWeekOfTheMonth(everyXWeek: Int, dayOfWeek: DayOfWeek, from: LocalDate, givenlocalDate: LocalDate): Boolean
     } = new {
 
-      def happensAtXPeriodOfTheMonth(period : java.time.temporal.ChronoUnit, periodIndex : Int, from: LocalDate, givenLocalDate : LocalDate)
-      : Boolean = periodIndex match {
-        case -1 => Specificity.happensAtTheLastPeriodOfTheYPeriod(period, periodIndex, from, givenLocalDate, MONTHS)
-        case _ => Specificity.happensAtTheXPeriodOfTheYPeriod(period, periodIndex, from, givenLocalDate, MONTHS)
+
+
+      def happensTheXWeekOfTheMonth(weekIndex: Int,
+                                    dayOfWeek: DayOfWeek,
+                                    from: LocalDate,
+                                    givenlocalDate: LocalDate)
+      : Boolean = weekIndex match {
+        case -1 => happensAtXPeriodOfTheMonth(WEEKS, dayOfWeek, from, givenlocalDate)
+        case _ => happensAtXPeriodOfTheMonth(WEEKS, weekIndex, from, givenlocalDate)
       }
 
 
+      def happensAtXPeriodOfTheMonth(period : java.time.temporal.ChronoUnit, dayOfWeek : DayOfWeek, from: LocalDate, givenLocalDate : LocalDate)
+      : Boolean = {
+        val inferredLastPeriodIndex = Ocurrence.DayOfWeekOcurrence.inMonth(dayOfWeek, YearMonth.from(givenLocalDate))
+        Specificity.happensAtTheXPeriodOfTheYPeriod(period, inferredLastPeriodIndex, from, givenLocalDate, MONTHS)
+      }
 
-      def happensTheXWeekOfTheMonth(everyXWeek: Int,
-                                    from: LocalDate,
-                                    givenlocalDate: LocalDate)
-      : Boolean = happensAtXPeriodOfTheMonth(WEEKS, everyXWeek, from, givenlocalDate)
+      def happensAtXPeriodOfTheMonth(period : java.time.temporal.ChronoUnit, periodIndex : Int, from: LocalDate, givenLocalDate : LocalDate)
+      : Boolean = Specificity.happensAtTheXPeriodOfTheYPeriod(period, periodIndex, from, givenLocalDate, MONTHS)
+
+
+
     }
   }
 

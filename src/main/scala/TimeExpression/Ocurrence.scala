@@ -1,7 +1,8 @@
 package TimeExpression
 
-import java.time.{DayOfWeek, YearMonth}
+import java.time.{DayOfWeek, LocalDate, YearMonth}
 import java.time.temporal.{ChronoUnit, TemporalAdjusters}
+import java.time.temporal.ChronoUnit.{DAYS, MONTHS, WEEKS, YEARS}
 
 
 object Ocurrence {
@@ -15,6 +16,8 @@ object Ocurrence {
     case object Fifth extends PatternMatch
     case object Last extends PatternMatch
 
+
+
     def inMonth(dow: DayOfWeek, month: YearMonth) : Int = {
       val start = month.atDay(1).`with`(TemporalAdjusters.nextOrSame(dow))
       val end = month.atEndOfMonth()
@@ -26,6 +29,7 @@ object Ocurrence {
       val end = month.withMonth(12)
       return ChronoUnit.WEEKS.between(start, end).toInt
     }
+
   }
 
 

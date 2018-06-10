@@ -120,7 +120,7 @@ class TimeExpressionSpec extends FlatSpec with Matchers {
 
   it should "reccur every month the last friday" in {
     val oneMonth = 1
-    val lastWeekOfMonth = Ocurrence.DayOfWeekOcurrence.Last
+    val lastWeekOfMonth = -1
     val januaryOf2012 = YearMonth.of(2012, 1)
     val everyMonthTheFirstFridayFromJanuary2012 = TimeExpression.monthlyEvery(oneMonth, DayOfWeek.FRIDAY, lastWeekOfMonth, januaryOf2012)
 

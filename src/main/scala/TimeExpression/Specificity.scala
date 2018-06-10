@@ -26,13 +26,6 @@ object Specificity {
   def happensAtTheXPeriodOfTheYPeriod(periodX : java.time.temporal.ChronoUnit, periodIndex : Int, from: LocalDate, givenLocalDate : LocalDate, periodY : java.time.temporal.ChronoUnit)
     : Boolean = periodsBetween(periodX, givenLocalDate, periodY) ==  periodIndex
 
-  def happensAtTheLastPeriodOfTheYPeriod(periodX : java.time.temporal.ChronoUnit,
-                                         periodIndex : Int,
-                                         from: LocalDate,
-                                         givenLocalDate : LocalDate,
-                                         periodY : java.time.temporal.ChronoUnit)
-  : Boolean = periodsBetween(periodX, givenLocalDate, periodY) ==  periodIndex
-
 
 }
 

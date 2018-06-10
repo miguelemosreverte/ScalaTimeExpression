@@ -7,7 +7,8 @@ object Recurrence {
 
 
 
-  def NonReccurrent(localDate: LocalDate): TimeExpression = (givenlocalDate: LocalDate) => givenlocalDate == localDate
+  def NonReccurrent(localDate: LocalDate, givenlocalDate: LocalDate)
+  : Boolean = givenlocalDate == localDate
 
   def happensEveryX(period : java.time.temporal.ChronoUnit, every : Int, from: LocalDate, givenLocalDate : LocalDate)
   : Boolean = period.between(from, givenLocalDate) % every == 0

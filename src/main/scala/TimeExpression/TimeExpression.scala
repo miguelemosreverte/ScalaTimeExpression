@@ -23,9 +23,7 @@ object TimeExpression {
 
 
 
-  def daily(every: Int, from: LocalDate): TimeExpression = new TimeExpression {
-    override def isRecurringOn(givenlocalDate: LocalDate): Boolean = Recurrence.happensEveryXDays(every, from, givenlocalDate)
-  }
+  def daily(every: Int, from: LocalDate): TimeExpression = (givenlocalDate: LocalDate) => Recurrence.happensEveryXDays(every, from, givenlocalDate)
 
   def monthlyEvery(amountOfMonth: Int, dayOfMonth: Int, from: YearMonth): TimeExpression = new TimeExpression {
     override def isRecurringOn(givenlocalDate: LocalDate): Boolean = (
@@ -49,18 +47,16 @@ object TimeExpression {
     override def isRecurringOn(givenlocalDate: LocalDate): Boolean = {
 
       val monthsBetweenFollowsTheRule = Recurrence.happensEveryXMonths(amountMonth, from.atDay(1), givenlocalDate)
-      val firstDayOfMonth = givenlocalDate.minusDays(givenlocalDate.getDayOfMonth-1)
-      val givenLocalDateGetWeekOfMonth =  WEEKS.between(firstDayOfMonth, givenlocalDate)
 
-      def countDayOccurenceInMonth(dow: DayOfWeek, month: YearMonth) : Long = {
+      def countDayOccurenceInMonth(dow: DayOfWeek, month: YearMonth) : Int = {
         val start = month.atDay(1).`with`(TemporalAdjusters.nextOrSame(dow))
-        return ChronoUnit.WEEKS.between(start, month.atEndOfMonth())
+        return ChronoUnit.WEEKS.between(start, month.atEndOfMonth()).toInt
       }
 
       val dayOfWeekFollowsTheRule =  weekOfMonth match {
-        case First =>  givenLocalDateGetWeekOfMonth == 1 //primitive obsession, maybe. I think I could improve this? (case class)
-        case Second => givenLocalDateGetWeekOfMonth == 2 //I refuse to use case classes because I find case objects so cool!
-        case Last =>   givenLocalDateGetWeekOfMonth == countDayOccurenceInMonth(dayOfWeek, YearMonth.from(givenlocalDate))
+        case First =>   Specificity.happensTheXWeekOfTheMonth(1, from.atDay(1), givenlocalDate)
+        case Second =>  Specificity.happensTheXWeekOfTheMonth(2, from.atDay(1), givenlocalDate)
+        case Last =>    Specificity.happensTheXWeekOfTheMonth(countDayOccurenceInMonth(dayOfWeek, YearMonth.from(givenlocalDate)), from.atDay(1), givenlocalDate)
 
 
       }

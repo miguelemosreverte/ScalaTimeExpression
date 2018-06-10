@@ -34,38 +34,5 @@ object Specificity {
   : Boolean = periodsBetween(periodX, givenLocalDate, periodY) ==  periodIndex
 
 
-
-  def happensAtXPeriodOfTheMonth(period : java.time.temporal.ChronoUnit, periodIndex : Int, from: LocalDate, givenLocalDate : LocalDate)
-  : Boolean = periodIndex match {
-    case -1 => happensAtTheLastPeriodOfTheYPeriod(period, periodIndex, from, givenLocalDate, MONTHS)
-    case _ => happensAtTheXPeriodOfTheYPeriod(period, periodIndex, from, givenLocalDate, MONTHS)
-  }
-
-  def happensAtXPeriodOfTheYear(period : java.time.temporal.ChronoUnit, periodIndex : Int, from: LocalDate, givenLocalDate : LocalDate)
-  : Boolean = periodIndex match {
-    case -1 => happensAtTheLastPeriodOfTheYPeriod(period, periodIndex, from, givenLocalDate, YEARS)
-    case _ => happensAtTheXPeriodOfTheYPeriod(period, periodIndex, from, givenLocalDate, YEARS)
-  }
-
-
-
-  def happensTheXWeekOfTheMonth(everyXWeek: Int,
-                        from: LocalDate,
-                        givenlocalDate: LocalDate)
-  : Boolean = happensAtXPeriodOfTheMonth(WEEKS, everyXWeek, from, givenlocalDate)
-
-
-
-  def happensTheXWeekOfTheYear(everyXWeek: Int,
-                                from: LocalDate,
-                                givenlocalDate: LocalDate)
-  : Boolean = happensAtXPeriodOfTheYear(WEEKS, everyXWeek, from, givenlocalDate)
-
-  def happensTheXMonthOfTheYear(everyXWeek: Int,
-                                from: LocalDate,
-                                givenlocalDate: LocalDate)
-  : Boolean = happensAtXPeriodOfTheYear(MONTHS, everyXWeek, from, givenlocalDate)
-
-
-
 }
+

@@ -35,14 +35,14 @@ object Specificity {
 
   def happensAtTheXPeriodOfTheYPeriod(periodX : java.time.temporal.ChronoUnit, periodIndex : Int, from: LocalDate, givenLocalDate : LocalDate, periodY : java.time.temporal.ChronoUnit)
     : Option[Boolean] =
-    periodsBetween(periodX, givenLocalDate, convertToSupportedChronoUnits(periodY)) match {
+    periodsBetween(periodX, givenLocalDate, periodY) match {
       case Some(value) => Some(periodIndex == value)
       case None => None
     }
 
 
   //TODO see if I can call this function implicitely
-  def convertToSupportedChronoUnits(chronoUnit : java.time.temporal.ChronoUnit)
+  implicit def convertToSupportedChronoUnits(chronoUnit : java.time.temporal.ChronoUnit)
   : Option[SupportedChronoUnits] =
     chronoUnit.toString match {
       case "Weeks" => Some(Week)

@@ -5,6 +5,8 @@ import java.time.{DayOfWeek, LocalDate, MonthDay}
 
 object Specificity {
 
+  def specifically(thisDate : MonthDay, thisOtherDate : MonthDay): Boolean = thisDate == thisOtherDate
+  def specifically(thisDate : DayOfWeek, thisOtherDate : DayOfWeek): Boolean = thisDate == thisOtherDate
 
   def happensAtTheXPeriodOfTheYPeriod(periodX : java.time.temporal.ChronoUnit, periodIndex : Int, from: LocalDate, givenLocalDate : LocalDate, periodY : java.time.temporal.ChronoUnit)
     : Boolean = {
@@ -17,16 +19,22 @@ object Specificity {
     return periodX.between(from, givenLocalDate) ==  periodIndex
   }
 
+
+
   def happensAtXPeriodOfTheMonth(period : java.time.temporal.ChronoUnit, periodIndex : Int, from: LocalDate, givenLocalDate : LocalDate)
   : Boolean = happensAtTheXPeriodOfTheYPeriod(period, periodIndex, from, givenLocalDate, MONTHS)
 
   def happensAtXPeriodOfTheYear(period : java.time.temporal.ChronoUnit, periodIndex : Int, from: LocalDate, givenLocalDate : LocalDate)
   : Boolean = happensAtTheXPeriodOfTheYPeriod(period, periodIndex, from, givenLocalDate, YEARS)
 
+
+
   def happensTheXWeekOfTheMonth(everyXWeek: Int,
                         from: LocalDate,
                         givenlocalDate: LocalDate)
   : Boolean = happensAtXPeriodOfTheMonth(WEEKS, everyXWeek, from, givenlocalDate)
+
+
 
   def happensTheXWeekOfTheYear(everyXWeek: Int,
                                 from: LocalDate,
@@ -40,6 +48,4 @@ object Specificity {
 
 
 
-  def specifically(thisDate : MonthDay, thisOtherDate : MonthDay): Boolean = thisDate == thisOtherDate
-  def specifically(thisDate : DayOfWeek, thisOtherDate : DayOfWeek): Boolean = thisDate == thisOtherDate
 }

@@ -72,11 +72,11 @@ object TimeExpression {
           return ChronoUnit.WEEKS.between(start, end).toInt
         }
         val inferredLastPeriodIndex = lastOcurrenceOfDayOfWeekInMonth(dayOfWeek, YearMonth.from(givenLocalDate))
-        Specificity.happensAtTheXPeriodOfTheYPeriod(period, inferredLastPeriodIndex, from, givenLocalDate, MONTHS)
+        Specificity.happensAtTheXPeriodOfTheYPeriod(period, inferredLastPeriodIndex, from, givenLocalDate, MONTHS).getOrElse(false)
       }
 
       def happensAtXPeriodOfTheMonth(period : java.time.temporal.ChronoUnit, periodIndex : Int, from: LocalDate, givenLocalDate : LocalDate)
-      : Boolean = Specificity.happensAtTheXPeriodOfTheYPeriod(period, periodIndex, from, givenLocalDate, MONTHS)
+      : Boolean = Specificity.happensAtTheXPeriodOfTheYPeriod(period, periodIndex, from, givenLocalDate, MONTHS).getOrElse(false)
 
 
 

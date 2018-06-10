@@ -10,21 +10,46 @@ object Specificity {
   def specifically(thisDate : DayOfWeek, thisOtherDate : DayOfWeek): Boolean = thisDate == thisOtherDate
 
 
+  sealed abstract class SupportedChronoUnits
+  case object Week extends SupportedChronoUnits
+  case object Month extends SupportedChronoUnits
+  case object Year extends SupportedChronoUnits
 
-  def periodsBetween(periodX : java.time.temporal.ChronoUnit, givenLocalDate : LocalDate, periodY : java.time.temporal.ChronoUnit)
- : Int = {
-    val deltaDays : Int = periodY match  {
-      case WEEKS => givenLocalDate.getDayOfWeek.getValue
-      case MONTHS => givenLocalDate.getDayOfMonth
-      case YEARS => givenLocalDate.getDayOfYear
+  def periodsBetween(periodX : java.time.temporal.ChronoUnit, givenLocalDate : LocalDate, periodY : Option[SupportedChronoUnits])
+ : Option[Int] = {
+    val deltaDays : Option[Int] = periodY match  {
+      case Some(Week) => Some(givenLocalDate.getDayOfWeek.getValue)
+      case Some(Month) => Some(givenLocalDate.getDayOfMonth)
+      case Some(Year) => Some(givenLocalDate.getDayOfYear)
+      case None => None
     }
-    val from = givenLocalDate.minusDays(deltaDays)
-    return periodX.between(from, givenLocalDate).toInt
+    deltaDays match {
+      case Some(value) => {
+        val from = givenLocalDate.minusDays(value)
+        Some(periodX.between(from, givenLocalDate).toInt)
+      }
+      case None => None
+    }
   }
 
 
   def happensAtTheXPeriodOfTheYPeriod(periodX : java.time.temporal.ChronoUnit, periodIndex : Int, from: LocalDate, givenLocalDate : LocalDate, periodY : java.time.temporal.ChronoUnit)
-    : Boolean = periodsBetween(periodX, givenLocalDate, periodY) ==  periodIndex
+    : Option[Boolean] =
+    periodsBetween(periodX, givenLocalDate, convertToSupportedChronoUnits(periodY)) match {
+      case Some(value) => Some(periodIndex == value)
+      case None => None
+    }
+
+
+  //TODO see if I can call this function implicitely
+  def convertToSupportedChronoUnits(chronoUnit : java.time.temporal.ChronoUnit)
+  : Option[SupportedChronoUnits] =
+    chronoUnit.toString match {
+      case "Weeks" => Some(Week)
+      case "Months" => Some(Month)
+      case "Years" => Some(Year)
+      case _ => None
+    }
 
 
 }
